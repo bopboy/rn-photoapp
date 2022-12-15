@@ -6,7 +6,7 @@ import { useEffect, useRef, useState } from 'react';
 import Button from '../components/Button';
 import SafeInputView from '../components/SafeInputView';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import TextButton from '../components/TextButton';
 import HR from '../components/HR';
 import { StatusBar } from 'expo-status-bar';
