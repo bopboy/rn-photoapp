@@ -6,7 +6,7 @@ import { useEffect, useRef, useState } from 'react';
 import Button from '../components/Button';
 import SafeInputView from '../components/SafeInputView';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useNavigation } from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import TextButton from '../components/TextButton';
 import HR from '../components/HR';
 import { StatusBar } from 'expo-status-bar';
@@ -22,6 +22,15 @@ const SignUpScreen = () => {
     const [disabled, setDisabled] = useState(true);
     const { top, bottom } = useSafeAreaInsets();
     const { navigate } = useNavigation();
+
+    useFocusEffect(() => {
+        console.log('SignUp Focus');
+        return () => console.log('SignUp Blur');
+    });
+    useEffect(() => {
+        console.log('SignUp Mount');
+        return () => console.log('SignUp Unmount');
+    }, []);
 
     useEffect(() => {
         setDisabled(!email || !password || !passwordConfirm);
