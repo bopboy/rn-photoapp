@@ -1,19 +1,21 @@
-import { Keyboard, StyleSheet, Text, View } from 'react-native';
-import PropTypes from 'prop-types';
+import { Keyboard, StyleSheet, View } from 'react-native';
 import { AuthRoutes } from '../navigations/routes';
 import Input, { InputTypes } from '../components/Input';
 import { useEffect, useRef, useState } from 'react';
 import Button from '../components/Button';
 import SafeInputView from '../components/SafeInputView';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useNavigation } from '@react-navigation/native';
+import TextButton from '../components/TextButton';
 
-const SignInScreen = ({ navigation }) => {
+const SignInScreen = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const passwordRef = useRef();
     const [isLoading, setIsLoading] = useState(false);
     const [disabled, setDisabled] = useState(true);
     const { top } = useSafeAreaInsets();
+    const { navigate } = useNavigation();
 
     useEffect(() => {
         setDisabled(!email || !password);
@@ -53,13 +55,13 @@ const SignInScreen = ({ navigation }) => {
                     onPress={onSubmit}
                     styles={{ container: { marginTop: 20 } }}
                 />
+                <TextButton
+                    title={'SIGNUP'}
+                    onPress={() => navigate(AuthRoutes.SIGN_UP)}
+                />
             </View>
         </SafeInputView>
     );
-};
-
-SignInScreen.propTypes = {
-    navigation: PropTypes.object,
 };
 
 const inputStyles = StyleSheet.create({
