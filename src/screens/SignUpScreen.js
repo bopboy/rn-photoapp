@@ -23,15 +23,6 @@ const SignUpScreen = () => {
     const { top, bottom } = useSafeAreaInsets();
     const { navigate } = useNavigation();
 
-    useFocusEffect(() => {
-        console.log('SignUp Focus');
-        return () => console.log('SignUp Blur');
-    });
-    useEffect(() => {
-        console.log('SignUp Mount');
-        return () => console.log('SignUp Unmount');
-    }, []);
-
     useEffect(() => {
         setDisabled(!email || !password || !passwordConfirm);
     }, [email, password, passwordConfirm]);

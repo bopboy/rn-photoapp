@@ -23,14 +23,14 @@ const SignInScreen = () => {
 
     useFocusEffect(
         useCallback(() => {
-            console.log('SignIn Focus');
-            return () => console.log('SignIn Blur');
+            return () => {
+                setEmail('');
+                setPassword('');
+                setIsLoading(false);
+                setDisabled(true);
+            };
         }, [])
     );
-    useEffect(() => {
-        console.log('SignIn Mount');
-        return () => console.log('SignIn Unmount');
-    }, []);
 
     useEffect(() => {
         setDisabled(!email || !password);
