@@ -22,7 +22,7 @@ const InputTypeProps = {
         placeholder: 'PASSWORD',
         keyboardType: 'default',
         secureTextEntry: true,
-        iconName: { active: 'lock', inactive: 'email-outline' },
+        iconName: { active: 'lock', inactive: 'lock-outline' },
     },
 };
 
@@ -39,6 +39,7 @@ const Input = forwardRef(({ inputType, styles, ...props }, ref) => {
         secureTextEntry,
         iconName: { active, inactive },
     } = InputTypeProps[inputType];
+
     const [isFocused, setIsFocused] = useState(false);
     const { value } = props;
 
@@ -48,11 +49,12 @@ const Input = forwardRef(({ inputType, styles, ...props }, ref) => {
                 style={[
                     defaultStyles.title,
                     { color: value || isFocused ? PRIMARY.DEFAULT : GRAY.DARK },
+                    styles?.title,
                 ]}
             >
                 {title}
             </Text>
-            <View style={{}}>
+            <View>
                 <TextInput
                     ref={ref}
                     {...props}
@@ -75,6 +77,9 @@ const Input = forwardRef(({ inputType, styles, ...props }, ref) => {
                     secureTextEntry={secureTextEntry}
                     onBlur={() => {
                         setIsFocused(false);
+                    }}
+                    onFocus={() => {
+                        setIsFocused(true);
                     }}
                 />
                 <View style={[defaultStyles.icon, styles?.icon]}>
