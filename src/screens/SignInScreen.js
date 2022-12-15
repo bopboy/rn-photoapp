@@ -1,7 +1,7 @@
 /* eslint-disable no-undef */
 import { Image, Keyboard, StyleSheet, View } from 'react-native';
 import { AuthRoutes } from '../navigations/routes';
-import Input, { InputTypes } from '../components/Input';
+import Input, { InputTypes, ReturnKeyTypes } from '../components/Input';
 import { useEffect, useRef, useState } from 'react';
 import Button from '../components/Button';
 import SafeInputView from '../components/SafeInputView';
@@ -56,6 +56,7 @@ const SignInScreen = () => {
                         onChangeText={(text) => setEmail(text.trim())}
                         onSubmitEditing={() => passwordRef.current.focus()}
                         styles={inputStyles}
+                        returnKeyType={ReturnKeyTypes.NEXT}
                     />
                     <Input
                         ref={passwordRef}
@@ -64,6 +65,7 @@ const SignInScreen = () => {
                         onChangeText={(text) => setPassword(text.trim())}
                         onSubmitEditing={onSubmit}
                         styles={inputStyles}
+                        returnKeyType={ReturnKeyTypes.DONE}
                     />
                     <Button
                         title={'SIGNIN'}
