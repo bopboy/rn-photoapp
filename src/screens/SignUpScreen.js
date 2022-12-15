@@ -2,7 +2,7 @@
 import { Image, Keyboard, ScrollView, StyleSheet, View } from 'react-native';
 import { AuthRoutes } from '../navigations/routes';
 import Input, { InputTypes, ReturnKeyTypes } from '../components/Input';
-import { useEffect, useRef, useState } from 'react';
+import { useReducer, useRef } from 'react';
 import Button from '../components/Button';
 import SafeInputView from '../components/SafeInputView';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -11,27 +11,42 @@ import TextButton from '../components/TextButton';
 import HR from '../components/HR';
 import { StatusBar } from 'expo-status-bar';
 import { WHITE } from '../colors';
+import {
+    authFormReducer,
+    AuthFromTypes,
+    initAuthForm,
+} from '../reducers/authFormReducer';
 
 const SignUpScreen = () => {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [passwordConfirm, setPasswordConfirm] = useState('');
     const passwordRef = useRef();
     const passwordConfirmRef = useRef();
-    const [isLoading, setIsLoading] = useState(false);
-    const [disabled, setDisabled] = useState(true);
+
+    const [form, dispatch] = useReducer(authFormReducer, initAuthForm);
+
     const { top, bottom } = useSafeAreaInsets();
     const { navigate } = useNavigation();
 
-    useEffect(() => {
-        setDisabled(!email || !password || !passwordConfirm);
-    }, [email, password, passwordConfirm]);
+    const updateForm = (payload) => {
+        const newForm = { ...form, ...payload };
+        const disabled =
+            !newForm.email ||
+            !newForm.password ||
+            newForm.password !== newForm.passwordConfirm;
+
+        dispatch({
+            type: AuthFromTypes.UPDATE_FORM,
+            payload: { disabled, ...payload },
+        });
+    };
 
     const onSubmit = () => {
         Keyboard.dismiss();
-        if (!disabled && !isLoading) {
-            setIsLoading(true);
-            setIsLoading(false);
+        if (!form.disabled && !form.isLoading) {
+            dispatch({ type: AuthFromTypes.TOGGLE_LOADING });
+            console.log(form.email, form.password);
+            setTimeout(() => {
+                dispatch({ type: AuthFromTypes.TOGGLE_LOADING });
+            }, 1000);
         }
     };
 
@@ -57,8 +72,10 @@ const SignUpScreen = () => {
                 >
                     <Input
                         inputType={InputTypes.EMAIL}
-                        value={email}
-                        onChangeText={(text) => setEmail(text.trim())}
+                        value={form.email}
+                        onChangeText={(text) =>
+                            updateForm({ email: text.trim() })
+                        }
                         onSubmitEditing={() => passwordRef.current.focus()}
                         styles={inputStyles}
                         returnKeyType={ReturnKeyTypes.NEXT}
@@ -66,27 +83,31 @@ const SignUpScreen = () => {
                     <Input
                         ref={passwordRef}
                         inputType={InputTypes.PASSWORD}
-                        value={password}
-                        onChangeText={(text) => setPassword(text.trim())}
-                        onSubmitEditing={onSubmit}
+                        value={form.password}
+                        onChangeText={(text) =>
+                            updateForm({ password: text.trim() })
+                        }
+                        onSubmitEditing={() =>
+                            passwordConfirmRef.current.focus()
+                        }
                         styles={inputStyles}
                         returnKeyType={ReturnKeyTypes.NEXT}
                     />
                     <Input
                         ref={passwordConfirmRef}
                         inputType={InputTypes.PASSWORD_CONFIRM}
-                        value={passwordConfirm}
-                        onChangeText={(text) => setPasswordConfirm(text.trim())}
-                        onSubmitEditing={() =>
-                            passwordConfirmRef.current.focus()
+                        value={form.passwordConfirm}
+                        onChangeText={(text) =>
+                            updateForm({ passwordConfirm: text.trim() })
                         }
+                        onSubmitEditing={onSubmit}
                         styles={inputStyles}
                         returnKeyType={ReturnKeyTypes.DONE}
                     />
                     <Button
                         title={'SIGNUP'}
-                        disabled={disabled}
-                        isLoading={isLoading}
+                        disabled={form.disabled}
+                        isLoading={form.isLoading}
                         onPress={onSubmit}
                         styles={{ container: { marginTop: 20 } }}
                     />
