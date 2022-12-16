@@ -1,22 +1,49 @@
 import { NavigationContainer } from '@react-navigation/native';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { onAuthStateChanged } from '../api/auth';
 import { useUserState } from '../contexts/UserContext';
 import AuthStack from './AuthStack';
 import MainStack from './MainStack';
+import * as SplashScreen from 'expo-splash-screen';
+import { Asset } from 'expo-asset';
+import { initFirebase } from '../api/firebase';
 
 const Navigation = () => {
     const [user, setUser] = useUserState();
+
+    const [isReady, setIsReady] = useState(false);
+
     useEffect(() => {
-        const unsubscribe = onAuthStateChanged((user) => {
-            if (user) {
-                setUser(user);
+        (async () => {
+            try {
+                await SplashScreen.preventAutoHideAsync();
+                await Asset.fromModule(
+                    // eslint-disable-next-line no-undef
+                    require('../../assets/cover.png')
+                ).downloadAsync();
+                initFirebase();
+                const unsubscribe = onAuthStateChanged((user) => {
+                    if (user) {
+                        setUser(user);
+                    }
+                    setIsReady(true);
+                    unsubscribe();
+                });
+            } catch (e) {
+                console.log(e);
+                setIsReady(true);
             }
-            unsubscribe();
-        });
+        })();
     }, [setUser]);
+
+    const onReady = async () => {
+        if (isReady) await SplashScreen.hideAsync();
+    };
+
+    if (!isReady) return null;
+
     return (
-        <NavigationContainer>
+        <NavigationContainer onReady={onReady}>
             {user.uid ? <MainStack /> : <AuthStack />}
         </NavigationContainer>
     );
