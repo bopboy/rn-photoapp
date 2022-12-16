@@ -6,6 +6,7 @@ import ProfileScreen from '../screens/ProfileScreen';
 import { ContentRoutes } from './routes';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { GRAY, PRIMARY } from '../colors';
+import TabBarButton from '../components/tabBarButton';
 
 const Tab = createBottomTabNavigator();
 
@@ -13,6 +14,8 @@ const getTabBarIcon = ({ focused, color, size, name }) => {
     const iconName = focused ? name : `${name}-outline`;
     return <MaterialCommunityIcons name={iconName} size={size} color={color} />;
 };
+
+const AddButtonScreen = () => null;
 
 const ContentTab = () => {
     return (
@@ -41,6 +44,11 @@ const ContentTab = () => {
                         getTabBarIcon({ ...props, name: 'post' }),
                     tabBarShowLabel: false,
                 }}
+            />
+            <Tab.Screen
+                name={'AddButton'}
+                component={AddButtonScreen}
+                options={{ tabBarButton: () => <TabBarButton /> }}
             />
             <Tab.Screen
                 name={ContentRoutes.MAP}
