@@ -18,7 +18,7 @@ const PasswordProps = {
 const InputTypeProps = {
     EMAIL: {
         title: 'EMAIL',
-        placeholder: 'your@email.com',
+        placeholder: 'my@email.com',
         keyboardType: 'email-address',
         secureTextEntry: false,
         iconName: { active: 'email', inactive: 'email-outline' },
