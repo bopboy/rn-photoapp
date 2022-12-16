@@ -2,11 +2,13 @@ import { StatusBar } from 'expo-status-bar';
 import { useEffect, useState } from 'react';
 import Navigation from './navigations';
 import * as SplashScreen from 'expo-splash-screen';
-import { View } from 'react-native';
+import { LogBox, View } from 'react-native';
 import { Asset } from 'expo-asset';
 import { initFirebase } from './api/firebase';
 
 const App = () => {
+    LogBox.ignoreLogs(['AsyncStorage has been extracted']);
+
     const [isReady, setIsReady] = useState(false);
 
     useEffect(() => {
