@@ -1,5 +1,12 @@
 /* eslint-disable no-undef */
-import { Image, Keyboard, ScrollView, StyleSheet, View } from 'react-native';
+import {
+    Alert,
+    Image,
+    Keyboard,
+    ScrollView,
+    StyleSheet,
+    View,
+} from 'react-native';
 import { AuthRoutes } from '../navigations/routes';
 import Input, { InputTypes, ReturnKeyTypes } from '../components/Input';
 import { useReducer, useRef } from 'react';
@@ -16,6 +23,8 @@ import {
     AuthFormTypes,
     initAuthForm,
 } from '../reducers/authFormReducer';
+import { useUserState } from '../contexts/UserContext';
+import { getAuthErrorMessage, signUp } from '../api/auth';
 
 const SignUpScreen = () => {
     const passwordRef = useRef();
@@ -26,6 +35,8 @@ const SignUpScreen = () => {
     const { top, bottom } = useSafeAreaInsets();
     const { navigate } = useNavigation();
 
+    const [, setUser] = useUserState();
+
     const updateForm = (payload) => {
         const newForm = { ...form, ...payload };
         const disabled =
@@ -34,19 +45,23 @@ const SignUpScreen = () => {
             newForm.password !== newForm.passwordConfirm;
 
         dispatch({
-            type: AuthFromTypes.UPDATE_FORM,
+            type: AuthFormTypes.UPDATE_FORM,
             payload: { disabled, ...payload },
         });
     };
 
-    const onSubmit = () => {
+    const onSubmit = async () => {
         Keyboard.dismiss();
         if (!form.disabled && !form.isLoading) {
             dispatch({ type: AuthFormTypes.TOGGLE_LOADING });
-            console.log(form.email, form.password);
-            setTimeout(() => {
-                dispatch({ type: AuthFormTypes.TOGGLE_LOADING });
-            }, 1000);
+            try {
+                const user = await signUp(form);
+                setUser(user);
+            } catch (e) {
+                const message = getAuthErrorMessage(e.code);
+                Alert.alert('회원 가입 실패', message);
+            }
+            dispatch({ type: AuthFormTypes.TOGGLE_LOADING });
         }
     };
 
