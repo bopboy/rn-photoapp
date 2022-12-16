@@ -1,4 +1,5 @@
 import { Button, StyleSheet, Text, View } from 'react-native';
+import { WHITE } from '../colors';
 // import PropTypes from 'prop-types';
 import { useUserState } from '../contexts/UserContext';
 
@@ -22,6 +23,7 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
+        backgroundColor: WHITE,
     },
     title: {
         fontSize: 30,

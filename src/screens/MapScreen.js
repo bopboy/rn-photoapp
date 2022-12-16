@@ -1,4 +1,5 @@
 import { StyleSheet, Text, View } from 'react-native';
+import { WHITE } from '../colors';
 // import PropTypes from 'prop-types';
 
 const MapScreen = () => {
@@ -18,6 +19,7 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
+        backgroundColor: WHITE,
     },
     title: {
         fontSize: 30,
