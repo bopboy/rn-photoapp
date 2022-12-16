@@ -1,10 +1,11 @@
-import { Button, Image, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { signOut } from '../api/auth';
 import { GRAY, WHITE } from '../colors';
 // import PropTypes from 'prop-types';
 import { useUserState } from '../contexts/UserContext';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import FastImage from '../components/FastImage';
 
 const ProfileScreen = () => {
     const [user, setUser] = useUserState();
@@ -35,7 +36,7 @@ const ProfileScreen = () => {
                         user.photoURL || { backgroundColor: GRAY.DEFAULT },
                     ]}
                 >
-                    <Image
+                    <FastImage
                         source={{ uri: user.photoURL }}
                         style={styles.photo}
                     />
@@ -99,7 +100,7 @@ const styles = StyleSheet.create({
     },
     listContainer: {
         flex: 1,
-        backgroundColor: GRAY.DARK,
+        // backgroundColor: GRAY.DARK,
     },
 });
 
