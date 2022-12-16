@@ -3,10 +3,10 @@ import { useEffect, useState } from 'react';
 import { onAuthStateChanged } from '../api/auth';
 import { useUserState } from '../contexts/UserContext';
 import AuthStack from './AuthStack';
-import MainStack from './MainStack';
 import * as SplashScreen from 'expo-splash-screen';
 import { Asset } from 'expo-asset';
 import { initFirebase } from '../api/firebase';
+import ContentTab from './ContentTab';
 
 const Navigation = () => {
     const [user, setUser] = useUserState();
@@ -30,7 +30,6 @@ const Navigation = () => {
                     unsubscribe();
                 });
             } catch (e) {
-                console.log(e);
                 setIsReady(true);
             }
         })();
@@ -44,7 +43,7 @@ const Navigation = () => {
 
     return (
         <NavigationContainer onReady={onReady}>
-            {user.uid ? <MainStack /> : <AuthStack />}
+            {user.uid ? <ContentTab /> : <AuthStack />}
         </NavigationContainer>
     );
 };
