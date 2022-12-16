@@ -4,6 +4,7 @@ import Navigation from './navigations';
 import * as SplashScreen from 'expo-splash-screen';
 import { View } from 'react-native';
 import { Asset } from 'expo-asset';
+import { initFirebase } from './api/firebase';
 
 const App = () => {
     const [isReady, setIsReady] = useState(false);
@@ -14,8 +15,9 @@ const App = () => {
                 await SplashScreen.preventAutoHideAsync();
                 await Asset.fromModule(
                     // eslint-disable-next-line no-undef
-                    require('../assets/cover.png').downloadAsync()
-                );
+                    require('../assets/cover.png')
+                ).downloadAsync();
+                initFirebase();
             } catch (e) {
                 console.log(e);
             } finally {
