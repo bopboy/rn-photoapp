@@ -13,7 +13,7 @@ import { StatusBar } from 'expo-status-bar';
 import { WHITE } from '../colors';
 import {
     authFormReducer,
-    AuthFromTypes,
+    AuthFormTypes,
     initAuthForm,
 } from '../reducers/authFormReducer';
 
@@ -42,10 +42,10 @@ const SignUpScreen = () => {
     const onSubmit = () => {
         Keyboard.dismiss();
         if (!form.disabled && !form.isLoading) {
-            dispatch({ type: AuthFromTypes.TOGGLE_LOADING });
+            dispatch({ type: AuthFormTypes.TOGGLE_LOADING });
             console.log(form.email, form.password);
             setTimeout(() => {
-                dispatch({ type: AuthFromTypes.TOGGLE_LOADING });
+                dispatch({ type: AuthFormTypes.TOGGLE_LOADING });
             }, 1000);
         }
     };

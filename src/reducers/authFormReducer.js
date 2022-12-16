@@ -6,7 +6,7 @@ export const initAuthForm = {
     disabled: true,
 };
 
-export const AuthFromTypes = {
+export const AuthFormTypes = {
     UPDATE_FORM: 'UPDATE_FORM',
     TOGGLE_LOADING: 'TOGGLE_LOADING',
     RESET: 'RESET',
@@ -14,11 +14,11 @@ export const AuthFromTypes = {
 
 export const authFormReducer = (state, action) => {
     switch (action.type) {
-        case AuthFromTypes.UPDATE_FORM:
+        case AuthFormTypes.UPDATE_FORM:
             return { ...state, ...action.payload };
-        case AuthFromTypes.TOGGLE_LOADING:
+        case AuthFormTypes.TOGGLE_LOADING:
             return { ...state, isLoading: !state.isLoading };
-        case AuthFromTypes.RESET:
+        case AuthFormTypes.RESET:
             return initAuthForm;
         default:
             return state;

@@ -1,5 +1,5 @@
 /* eslint-disable no-undef */
-import { Image, Keyboard, ScrollView, StyleSheet, View } from 'react-native';
+import { Alert, Image, Keyboard, ScrollView, StyleSheet, View } from 'react-native';
 import { AuthRoutes } from '../navigations/routes';
 import Input, { InputTypes, ReturnKeyTypes } from '../components/Input';
 import { useCallback, useReducer, useRef } from 'react';
@@ -13,10 +13,10 @@ import { StatusBar } from 'expo-status-bar';
 import { WHITE } from '../colors';
 import {
     authFormReducer,
-    AuthFromTypes,
+    AuthFormTypes,
     initAuthForm,
 } from '../reducers/authFormReducer';
-import { signIn } from '../api/auth';
+import { getAuthErrorMessage, signIn } from '../api/auth';
 
 const SignInScreen = () => {
     const passwordRef = useRef();
@@ -37,7 +37,7 @@ const SignInScreen = () => {
         const disabled = !newForm.email || !newForm.password;
 
         dispatch({
-            type: AuthFromTypes.UPDATE_FORM,
+            type: AuthFormTypes.UPDATE_FORM,
             payload: { disabled, ...payload },
         });
     };
@@ -45,10 +45,15 @@ const SignInScreen = () => {
     const onSubmit = async () => {
         Keyboard.dismiss();
         if (!form.disabled && !form.isLoading) {
-            dispatch({ type: AuthFromTypes.TOGGLE_LOADING });
-            const user = await signIn(form);
-            console.log(user);
-            dispatch({ type: AuthFromTypes.TOGGLE_LOADING });
+            dispatch({ type: AuthFormTypes.TOGGLE_LOADING });
+            try {
+                const user = await signIn(form);
+                console.log(user);
+            } catch (e) {
+                const message = getAuthErrorMessage(e.code);
+                Alert.alert('로그인 실패', message);
+            }
+            dispatch({ type: AuthFormTypes.TOGGLE_LOADING });
         }
     };
 
