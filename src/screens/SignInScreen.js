@@ -1,5 +1,12 @@
 /* eslint-disable no-undef */
-import { Alert, Image, Keyboard, ScrollView, StyleSheet, View } from 'react-native';
+import {
+    Alert,
+    Image,
+    Keyboard,
+    ScrollView,
+    StyleSheet,
+    View,
+} from 'react-native';
 import { AuthRoutes } from '../navigations/routes';
 import Input, { InputTypes, ReturnKeyTypes } from '../components/Input';
 import { useCallback, useReducer, useRef } from 'react';
@@ -17,6 +24,7 @@ import {
     initAuthForm,
 } from '../reducers/authFormReducer';
 import { getAuthErrorMessage, signIn } from '../api/auth';
+import { useUserState } from '../contexts/UserContext';
 
 const SignInScreen = () => {
     const passwordRef = useRef();
@@ -26,9 +34,11 @@ const SignInScreen = () => {
     const { top, bottom } = useSafeAreaInsets();
     const { navigate } = useNavigation();
 
+    const [, setUser] = useUserState();
+
     useFocusEffect(
         useCallback(() => {
-            return () => dispatch({ type: AuthFromTypes.RESET });
+            return () => dispatch({ type: AuthFormTypes.RESET });
         }, [])
     );
 
@@ -48,7 +58,8 @@ const SignInScreen = () => {
             dispatch({ type: AuthFormTypes.TOGGLE_LOADING });
             try {
                 const user = await signIn(form);
-                console.log(user);
+                // console.log(user);
+                setUser(user);
             } catch (e) {
                 const message = getAuthErrorMessage(e.code);
                 Alert.alert('로그인 실패', message);
