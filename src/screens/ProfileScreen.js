@@ -1,15 +1,23 @@
 import { Button, StyleSheet, Text, View } from 'react-native';
+import { signOut } from '../api/auth';
 import { WHITE } from '../colors';
 // import PropTypes from 'prop-types';
 import { useUserState } from '../contexts/UserContext';
 
 const ProfileScreen = () => {
-    const [, setUser] = useUserState();
-
+    const [user, setUser] = useUserState();
+    console.log(user.uid, user.email, user.displayName, user.photoURL);
+    
     return (
         <View style={styles.container}>
             <Text style={styles.title}>ProfileScreen</Text>
-            <Button title={'signout'} onPress={() => setUser({})} />
+            <Button
+                title={'signout'}
+                onPress={async () => {
+                    await signOut();
+                    setUser({});
+                }}
+            />
         </View>
     );
 };
