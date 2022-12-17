@@ -19,15 +19,19 @@ import {
 } from 'react';
 import * as MediaLibrary from 'expo-media-library';
 
+const initListInfo = {
+    endCursor: '',
+    hasNextPage: true,
+};
+
 const ImagePickerScreen = () => {
     const navigation = useNavigation();
     const [status, requestPermission] = MediaLibrary.usePermissions();
     const [photos, setPhotos] = useState([]);
-    const listInfo = useRef({
-        endCursor: '',
-        hasNextPage: true,
-    });
     const width = useWindowDimensions().width / 3;
+
+    const listInfo = useRef(initListInfo);
+    const [refreshing, setRefreshing] = useState(false);
 
     const getPhotos = useCallback(async () => {
         const options = {
@@ -40,13 +44,20 @@ const ImagePickerScreen = () => {
         if (listInfo.current.hasNextPage) {
             const { assets, endCursor, hasNextPage } =
                 await MediaLibrary.getAssetsAsync(options);
-            setPhotos((prev) => [...prev, ...assets]);
+            setPhotos((prev) =>
+                options.after ? [...prev, ...assets] : assets
+            );
             // setListInfo({ endCursor, hasNextPage });
             listInfo.current = { endCursor, hasNextPage };
         }
     }, []);
 
-    console.log(photos.length);
+    const onRefresh = async () => {
+        setRefreshing(true);
+        listInfo.current = initListInfo;
+        await getPhotos();
+        setRefreshing(false);
+    };
 
     useEffect(() => {
         if (status?.granted) getPhotos();
@@ -73,6 +84,8 @@ const ImagePickerScreen = () => {
         });
     });
 
+    console.log(photos.length);
+
     return (
         <View style={styles.container}>
             <FlatList
@@ -89,6 +102,8 @@ const ImagePickerScreen = () => {
                 numColumns={3}
                 onEndReached={getPhotos}
                 onEndReachedThreshold={0.3}
+                onRefresh={onRefresh}
+                refreshing={refreshing}
             />
             <Text style={styles.title}>ImagePickerScreen</Text>
         </View>
