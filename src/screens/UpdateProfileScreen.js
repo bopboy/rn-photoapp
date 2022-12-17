@@ -15,6 +15,7 @@ import HeaderRight from '../components/HeaderRight';
 import { useCallback, useEffect, useLayoutEffect, useState } from 'react';
 import { updateUserInfo } from '../api/auth';
 import SafeInputView from '../components/SafeInputView';
+import { MainRoutes } from '../navigations/routes';
 // import PropTypes from 'prop-types';
 
 const UpdateProfileScreen = () => {
@@ -61,7 +62,12 @@ const UpdateProfileScreen = () => {
                         source={{ uri: user.photoURL }}
                         style={styles.photo}
                     />
-                    <Pressable onPress={() => {}} style={styles.imageButton}>
+                    <Pressable
+                        onPress={() =>
+                            navigation.navigate(MainRoutes.IMAGE_PICKER)
+                        }
+                        style={styles.imageButton}
+                    >
                         <MaterialCommunityIcons
                             name="image"
                             size={20}
