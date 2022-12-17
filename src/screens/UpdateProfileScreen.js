@@ -46,16 +46,17 @@ const UpdateProfileScreen = () => {
         if (!disabled) {
             setIsLoading(true);
             try {
-                const localUri = Platform.select({
-                    ios: await getLocalUri(photo.id),
-                    android: photo.uri,
-                });
+                const localUri = photo.id
+                    ? Platform.select({
+                          ios: await getLocalUri(photo.id),
+                          android: photo.uri,
+                      })
+                    : photo.uri;
                 const photoURL = await uploadPhoto(localUri);
-                console.log(photoURL);
-                // const userInfo = { displayName };
-                // await updateUserInfo(userInfo);
-                // setUser((prev) => ({ ...prev, ...userInfo }));
-                // navigation.goBack();
+                const userInfo = { displayName, photoURL };
+                await updateUserInfo(userInfo);
+                setUser((prev) => ({ ...prev, ...userInfo }));
+                navigation.goBack();
             } catch (e) {
                 Alert.alert('사용자 정보 수정 실패', e.message);
                 setIsLoading(false);
