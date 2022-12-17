@@ -16,7 +16,6 @@ import { useCallback, useEffect, useLayoutEffect, useState } from 'react';
 import { updateUserInfo } from '../api/auth';
 import SafeInputView from '../components/SafeInputView';
 import { MainRoutes } from '../navigations/routes';
-// import PropTypes from 'prop-types';
 
 const UpdateProfileScreen = () => {
     const navigation = useNavigation();
@@ -103,10 +102,6 @@ const UpdateProfileScreen = () => {
             </View>
         </SafeInputView>
     );
-};
-
-UpdateProfileScreen.propTypes = {
-    // propTypes
 };
 
 const styles = StyleSheet.create({
