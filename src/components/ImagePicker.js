@@ -2,9 +2,12 @@ import { Alert, FlatList, StyleSheet, View } from 'react-native';
 import PropTypes from 'prop-types';
 import * as MediaLibrary from 'expo-media-library';
 import { useCallback, useEffect, useRef, useState } from 'react';
-
 import { useNavigation } from '@react-navigation/native';
 import PhotoItem from './PhotoItem';
+
+export const getLocalUri = async (id) => {
+    return (await MediaLibrary.getAssetInfoAsync(id)).localUri;
+};
 
 const initListInfo = {
     endCursor: '',
