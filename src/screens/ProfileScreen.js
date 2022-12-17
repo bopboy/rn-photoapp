@@ -20,14 +20,14 @@ const ProfileScreen = () => {
             <DangerAlert
                 visible={visible}
                 onClose={() => setVisible(false)}
+                onConfirm={async () => {
+                    signOut();
+                    setUser({});
+                }}
                 alertType={AlertTypes.SIGNOUT}
             />
             <View style={styles.settingButton}>
                 <Pressable
-                    // onPress={async () => {
-                    //     signOut();
-                    //     setUser({});
-                    // }}
                     onPress={() => {
                         setVisible(true);
                     }}

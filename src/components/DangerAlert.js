@@ -1,6 +1,8 @@
 import { Modal, Pressable, StyleSheet, Text, View } from 'react-native';
 import PropTypes from 'prop-types';
-import { BLACK, WHITE } from '../colors';
+import { BLACK, DANGER, WHITE } from '../colors';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import Button, { ButtonTypes } from './Button';
 
 export const AlertTypes = {
     SIGNOUT: 'SIGNOUT',
@@ -13,7 +15,7 @@ const DangerAlertProps = {
     },
 };
 
-const DangerAlert = ({ visible, onClose, alertType }) => {
+const DangerAlert = ({ visible, onClose, onConfirm, alertType }) => {
     const { iconName, title, message } = DangerAlertProps[alertType];
 
     return (
@@ -29,8 +31,32 @@ const DangerAlert = ({ visible, onClose, alertType }) => {
                     style={styles.background}
                 ></Pressable>
                 <View style={styles.alert}>
+                    <View style={styles.iconBackground}>
+                        <View style={styles.icon}>
+                            <MaterialCommunityIcons
+                                name={iconName}
+                                size={35}
+                                color={WHITE}
+                            />
+                        </View>
+                    </View>
                     <Text style={styles.title}>{title}</Text>
                     <Text style={styles.message}>{message}</Text>
+
+                    <View style={styles.buttonContainer}>
+                        <Button
+                            title={'취소'}
+                            onPress={onClose}
+                            styles={buttonStyles}
+                            buttonType={ButtonTypes.CANCEL}
+                        />
+                        <Button
+                            title={'확인'}
+                            onPress={onConfirm}
+                            styles={buttonStyles}
+                            buttonType={ButtonTypes.DANGER}
+                        />
+                    </View>
                 </View>
             </View>
         </Modal>
@@ -40,14 +66,26 @@ const DangerAlert = ({ visible, onClose, alertType }) => {
 DangerAlert.propTypes = {
     visible: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
+    onConfirm: PropTypes.func.isRequired,
     alertType: PropTypes.oneOf(Object.values(AlertTypes)),
+};
+
+const buttonStyles = {
+    container: {
+        flex: 1,
+        marginHorizontal: 10,
+        marginTop: 10,
+    },
+    button: {
+        borderRadius: 8,
+    },
 };
 
 const styles = StyleSheet.create({
     background: {
         ...StyleSheet.absoluteFillObject,
         backgroundColor: BLACK,
-        opacity: 0.3,
+        opacity: 0.5,
     },
     container: {
         flex: 1,
@@ -70,6 +108,28 @@ const styles = StyleSheet.create({
     message: {
         fontSize: 16,
         marginVertical: 10,
+    },
+    iconBackground: {
+        position: 'absolute',
+        width: 80,
+        height: 80,
+        borderRadius: 40,
+        backgroundColor: WHITE,
+        top: -40,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    icon: {
+        backgroundColor: DANGER.DEFAULT,
+        width: 74,
+        height: 74,
+        borderRadius: 37,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    buttonContainer: {
+        width: '100%',
+        flexDirection: 'row',
     },
 });
 

@@ -9,7 +9,7 @@ import PropTypes from 'prop-types';
 import { GRAY, PRIMARY, WHITE, DANGER } from '../colors';
 
 export const ButtonTypes = {
-    PRIMARY: 'PRIMAY',
+    PRIMARY: 'PRIMARY',
     DANGER: 'DANGER',
     CANCEL: 'CANCEL',
 };
