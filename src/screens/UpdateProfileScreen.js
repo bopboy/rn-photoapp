@@ -1,12 +1,5 @@
 import { useNavigation } from '@react-navigation/native';
-import {
-    Button,
-    Pressable,
-    StyleSheet,
-    Text,
-    TextInput,
-    View,
-} from 'react-native';
+import { Button, Pressable, StyleSheet, TextInput, View } from 'react-native';
 import FastImage from '../components/FastImage';
 import { useUserState } from '../contexts/UserContext';
 import { MaterialCommunityIcons } from '@expo/vector-icons';

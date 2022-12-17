@@ -25,6 +25,7 @@ const ContentTab = () => {
                 headerShown: false,
                 tabBarActiveTintColor: PRIMARY.DARK,
                 tabBarInactiveTintColor: GRAY.DARK,
+                tabBarShowLabel: false,
             }}
         >
             <Tab.Screen
