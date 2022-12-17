@@ -8,9 +8,6 @@ import {
     updateProfile,
 } from 'firebase/auth';
 
-const PHOTO_URL =
-    'https://firebasestorage.googleapis.com/v0/b/rn-photoapp.appspot.com/o/profile.png?alt=media';
-
 export const signIn = async ({ email, password }) => {
     const { user } = await signInWithEmailAndPassword(
         getAuth(),
@@ -36,6 +33,9 @@ export const getAuthErrorMessage = (errorCode) => {
             return '로그인 실패!!';
     }
 };
+
+const PHOTO_URL =
+    'https://firebasestorage.googleapis.com/v0/b/rn-photoapp.appspot.com/o/profile.png?alt=media';
 
 export const signUp = async ({ email, password }) => {
     const { user } = await createUserWithEmailAndPassword(

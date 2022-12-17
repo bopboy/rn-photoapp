@@ -21,7 +21,7 @@ const ProfileScreen = () => {
                 visible={visible}
                 onClose={() => setVisible(false)}
                 onConfirm={async () => {
-                    signOut();
+                    await signOut();
                     setUser({});
                 }}
                 alertType={AlertTypes.SIGNOUT}
