@@ -4,11 +4,20 @@ import FastImage from '../components/FastImage';
 import { useUserState } from '../contexts/UserContext';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { GRAY, WHITE } from '../colors';
+import HeaderRight from '../components/HeaderRight';
+import { useLayoutEffect } from 'react';
 // import PropTypes from 'prop-types';
 
 const UpdateProfileScreen = () => {
     const navigation = useNavigation();
 
+    useLayoutEffect(() => {
+        navigation.setOptions({
+            headerRight: () => (
+                <HeaderRight onPress={() => console.log('right')} />
+            ),
+        });
+    }, [navigation]);
     const [user] = useUserState();
 
     return (
