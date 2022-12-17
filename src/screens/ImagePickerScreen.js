@@ -10,14 +10,20 @@ import {
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import HeaderRight from '../components/HeaderRight';
-import { useCallback, useEffect, useLayoutEffect, useState } from 'react';
+import {
+    useCallback,
+    useEffect,
+    useLayoutEffect,
+    useRef,
+    useState,
+} from 'react';
 import * as MediaLibrary from 'expo-media-library';
 
 const ImagePickerScreen = () => {
     const navigation = useNavigation();
     const [status, requestPermission] = MediaLibrary.usePermissions();
     const [photos, setPhotos] = useState([]);
-    const [listInfo, setListInfo] = useState({
+    const listInfo = useRef({
         endCursor: '',
         hasNextPage: true,
     });
@@ -28,16 +34,17 @@ const ImagePickerScreen = () => {
             first: 30,
             sortBy: [MediaLibrary.SortBy.creationTime],
         };
-        if (listInfo.endCursor) {
-            options['after'] = listInfo.endCursor;
+        if (listInfo.current.endCursor) {
+            options['after'] = listInfo.current.endCursor;
         }
-        if (listInfo.hasNextPage) {
+        if (listInfo.current.hasNextPage) {
             const { assets, endCursor, hasNextPage } =
                 await MediaLibrary.getAssetsAsync(options);
             setPhotos((prev) => [...prev, ...assets]);
-            setListInfo({ endCursor, hasNextPage });
+            // setListInfo({ endCursor, hasNextPage });
+            listInfo.current = { endCursor, hasNextPage };
         }
-    }, [listInfo.hasNextPage, listInfo.endCursor]);
+    }, []);
 
     console.log(photos.length);
 
@@ -81,6 +88,7 @@ const ImagePickerScreen = () => {
                 )}
                 numColumns={3}
                 onEndReached={getPhotos}
+                onEndReachedThreshold={0.3}
             />
             <Text style={styles.title}>ImagePickerScreen</Text>
         </View>
