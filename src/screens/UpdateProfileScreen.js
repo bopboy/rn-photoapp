@@ -1,55 +1,90 @@
 import { useNavigation } from '@react-navigation/native';
-import { Button, Pressable, StyleSheet, TextInput, View } from 'react-native';
+import {
+    Alert,
+    Keyboard,
+    Pressable,
+    StyleSheet,
+    TextInput,
+    View,
+} from 'react-native';
 import FastImage from '../components/FastImage';
 import { useUserState } from '../contexts/UserContext';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { GRAY, WHITE } from '../colors';
 import HeaderRight from '../components/HeaderRight';
-import { useLayoutEffect } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useState } from 'react';
+import { updateUserInfo } from '../api/auth';
+import SafeInputView from '../components/SafeInputView';
 // import PropTypes from 'prop-types';
 
 const UpdateProfileScreen = () => {
     const navigation = useNavigation();
 
+    const [user, setUser] = useUserState();
+
+    const [displayName, setDisplayName] = useState(user.displayName);
+    const [disabled, setDisabled] = useState(true);
+    const [isLoading, setIsLoading] = useState(false);
+
+    const onSubmit = useCallback(async () => {
+        Keyboard.dismiss();
+        if (!disabled) {
+            setIsLoading(true);
+            try {
+                const userInfo = { displayName };
+                await updateUserInfo(userInfo);
+                setUser((prev) => ({ ...prev, ...userInfo }));
+            } catch (e) {
+                Alert.alert('사용자 정보 수정 실패', e.message);
+                setIsLoading(false);
+            }
+        }
+    }, [disabled, displayName, setUser]);
+
+    useEffect(() => {
+        setDisabled(!displayName || isLoading);
+    }, [displayName, isLoading]);
+
     useLayoutEffect(() => {
         navigation.setOptions({
             headerRight: () => (
-                <HeaderRight onPress={() => console.log('right')} />
+                <HeaderRight onPress={onSubmit} disabled={disabled} />
             ),
         });
-    }, [navigation]);
-    const [user] = useUserState();
+    }, [navigation, disabled, onSubmit]);
 
     return (
-        <View style={styles.container}>
-            <Button title="back" onPress={() => navigation.goBack()} />
-            <View>
-                <FastImage
-                    source={{ uri: user.photoURL }}
-                    style={styles.photo}
-                />
-                <Pressable onPress={() => {}} style={styles.imageButton}>
-                    <MaterialCommunityIcons
-                        name="image"
-                        size={20}
-                        color={WHITE}
+        <SafeInputView>
+            <View style={styles.container}>
+                <View>
+                    <FastImage
+                        source={{ uri: user.photoURL }}
+                        style={styles.photo}
                     />
-                </Pressable>
+                    <Pressable onPress={() => {}} style={styles.imageButton}>
+                        <MaterialCommunityIcons
+                            name="image"
+                            size={20}
+                            color={WHITE}
+                        />
+                    </Pressable>
+                </View>
+                <View>
+                    <TextInput
+                        value={displayName}
+                        onChangeText={(text) => setDisplayName(text.trim())}
+                        style={styles.input}
+                        placeholder={'Nickname'}
+                        textAlign={'center'}
+                        maxLength={10}
+                        returnKeyType={'done'}
+                        autoCapitalize={'none'}
+                        autoCorrect={false}
+                        textContentType={'none'}
+                    />
+                </View>
             </View>
-            <View>
-                <TextInput
-                    value={user.displayName}
-                    style={styles.input}
-                    placeholder={'Nickname'}
-                    textAlign={'center'}
-                    maxLength={10}
-                    returnKeyType={'done'}
-                    autoCapitalize={'none'}
-                    autoCorrect={false}
-                    textContentType={'none'}
-                />
-            </View>
-        </View>
+        </SafeInputView>
     );
 };
 
