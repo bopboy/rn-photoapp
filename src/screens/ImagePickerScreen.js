@@ -9,7 +9,7 @@ import {
     useWindowDimensions,
     View,
 } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useNavigationState } from '@react-navigation/native';
 import HeaderRight from '../components/HeaderRight';
 import {
     useCallback,
@@ -38,6 +38,8 @@ const ImagePickerScreen = () => {
     const [refreshing, setRefreshing] = useState(false);
 
     const [selectedPhotos, setSelectedPhotos] = useState([]);
+
+    const stateRoutes = useNavigationState((state) => state.routes);
 
     const getPhotos = useCallback(async () => {
         const options = {
@@ -83,11 +85,21 @@ const ImagePickerScreen = () => {
         })();
     }, [navigation, requestPermission]);
 
+    const onConfirm = useCallback(() => {
+        const prevScreenName = stateRoutes[stateRoutes.length - 2].name;
+        navigation.navigate(prevScreenName, { selectedPhotos });
+    }, [navigation, selectedPhotos, stateRoutes]);
+
     useLayoutEffect(() => {
         navigation.setOptions({
-            headerRight: () => <HeaderRight onPress={() => {}} />,
+            headerRight: () => (
+                <HeaderRight
+                    onPress={onConfirm}
+                    disabled={selectedPhotos.length < 1}
+                />
+            ),
         });
-    });
+    }, [navigation, onConfirm, selectedPhotos.length]);
 
     const isSelectedPhoto = (photo) => {
         return selectedPhotos.findIndex((item) => item.id === photo.id) > -1;
