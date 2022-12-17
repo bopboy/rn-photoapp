@@ -28,16 +28,18 @@ const ImagePickerScreen = () => {
             first: 30,
             sortBy: [MediaLibrary.SortBy.creationTime],
         };
-        // const result = await MediaLibrary.getAssetsAsync(options);
-        // console.log(result.assets);
-        // console.log(result.endCursor, result.hasNextPage, result.totalCount);
+        if (listInfo.endCursor) {
+            options['after'] = listInfo.endCursor;
+        }
         if (listInfo.hasNextPage) {
             const { assets, endCursor, hasNextPage } =
                 await MediaLibrary.getAssetsAsync(options);
-            setPhotos(assets);
+            setPhotos((prev) => [...prev, ...assets]);
             setListInfo({ endCursor, hasNextPage });
         }
-    }, [listInfo.hasNextPage]);
+    }, [listInfo.hasNextPage, listInfo.endCursor]);
+
+    console.log(photos.length);
 
     useEffect(() => {
         if (status?.granted) getPhotos();
@@ -78,6 +80,7 @@ const ImagePickerScreen = () => {
                     </Pressable>
                 )}
                 numColumns={3}
+                onEndReached={getPhotos}
             />
             <Text style={styles.title}>ImagePickerScreen</Text>
         </View>
