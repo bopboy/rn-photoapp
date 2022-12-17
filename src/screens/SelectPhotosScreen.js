@@ -1,5 +1,6 @@
 import {
     Alert,
+    Image,
     Platform,
     Pressable,
     StyleSheet,
@@ -15,6 +16,8 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useCallback, useEffect, useLayoutEffect, useState } from 'react';
 import { getLocalUri } from '../components/ImagePicker';
 import HeaderRight from '../components/HeaderRight';
+import Swiper from 'react-native-swiper';
+import { BlurView } from 'expo-blur';
 
 const SelectPhotosScreen = () => {
     const navigation = useNavigation();
@@ -70,20 +73,46 @@ const SelectPhotosScreen = () => {
         <View style={styles.container}>
             <Text style={styles.description}>이미지는 최대 4장까지...</Text>
             <View style={{ width, height: width }}>
-                <Pressable
-                    onPress={() =>
-                        navigation.navigate(MainRoutes.IMAGE_PICKER, {
-                            maxCount: 4,
-                        })
-                    }
-                    style={styles.photoButton}
-                >
-                    <MaterialCommunityIcons
-                        name="image-plus"
-                        size={80}
-                        color={GRAY.DEFAULT}
-                    />
-                </Pressable>
+                {photos.length ? (
+                    <Swiper>
+                        {photos.map(({ uri }, idx) => (
+                            <View key={idx} style={styles.photo}>
+                                <Image
+                                    source={{ uri }}
+                                    resizeMode={'cover'}
+                                    style={StyleSheet.absoluteFillObject}
+                                />
+                                <BlurView
+                                    intensity={Platform.select({
+                                        ios: 10,
+                                        android: 90,
+                                    })}
+                                >
+                                    <Image
+                                        source={{ uri }}
+                                        resizeMode={'contain'}
+                                        style={styles.photo}
+                                    />
+                                </BlurView>
+                            </View>
+                        ))}
+                    </Swiper>
+                ) : (
+                    <Pressable
+                        onPress={() =>
+                            navigation.navigate(MainRoutes.IMAGE_PICKER, {
+                                maxCount: 4,
+                            })
+                        }
+                        style={styles.photoButton}
+                    >
+                        <MaterialCommunityIcons
+                            name="image-plus"
+                            size={80}
+                            color={GRAY.DEFAULT}
+                        />
+                    </Pressable>
+                )}
             </View>
         </View>
     );
@@ -108,6 +137,10 @@ const styles = StyleSheet.create({
         height: '100%',
         justifyContent: 'center',
         alignItems: 'center',
+    },
+    photo: {
+        widht: '100%',
+        height: '100%',
     },
 });
 
