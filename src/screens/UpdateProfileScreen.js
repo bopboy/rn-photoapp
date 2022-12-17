@@ -35,7 +35,6 @@ const UpdateProfileScreen = () => {
         if (params) {
             const { selectedPhotos } = params;
             if (selectedPhotos?.length) {
-                console.log(selectedPhotos[0]);
                 setPhoto(selectedPhotos[0]);
             }
         }
@@ -62,7 +61,7 @@ const UpdateProfileScreen = () => {
                 setIsLoading(false);
             }
         }
-    }, [disabled, displayName, setUser, photo.id, photo.uri]);
+    }, [disabled, photo.id, photo.uri, displayName, setUser, navigation]);
 
     useEffect(() => {
         setDisabled(!displayName || isLoading);

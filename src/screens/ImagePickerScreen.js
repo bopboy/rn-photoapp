@@ -1,11 +1,16 @@
-import { useNavigation, useNavigationState } from '@react-navigation/native';
+import {
+    useNavigation,
+    useNavigationState,
+    useRoute,
+} from '@react-navigation/native';
 import HeaderRight from '../components/HeaderRight';
 import { useCallback, useLayoutEffect, useState } from 'react';
 import ImagePicker from '../components/ImagePicker';
 
 const ImagePickerScreen = () => {
-    const maxCount = 3;
     const navigation = useNavigation();
+    const { params } = useRoute();
+    const maxCount = params?.maxCount ?? 1;
 
     const [selectedPhotos, setSelectedPhotos] = useState([]);
 
