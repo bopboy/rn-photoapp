@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import PostItem from './PostItem';
 import { GRAY } from '../colors';
 
-const PostList = ({ data }) => {
+const PostList = ({ data, fetchNextPage }) => {
     return (
         <FlatList
             data={data}
@@ -11,12 +11,15 @@ const PostList = ({ data }) => {
             ItemSeparatorComponent={() => (
                 <View style={styles.separator}></View>
             )}
+            onEndReached={fetchNextPage}
+            onEndReachedThreshold={0.4}
         />
     );
 };
 
 PostList.propTypes = {
     data: PropTypes.array.isRequired,
+    fetchNextPage: PropTypes.func,
 };
 
 const styles = StyleSheet.create({
