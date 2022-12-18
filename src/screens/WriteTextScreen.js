@@ -13,6 +13,7 @@ import FastImage from '../components/FastImage';
 import { GRAY } from '../colors';
 import LocationSearch from '../components/LocationSearch';
 import { uploadPhoto } from '../api/storage';
+import { createPost } from '../api/post';
 
 const MAX_TEXT_LENGTH = 60;
 
@@ -42,13 +43,14 @@ const WriteTextScreen = () => {
             const photos = await Promise.all(
                 photoUris.map((uri) => uploadPhoto(uri))
             );
-            console.log(photos);
+            await createPost({ photos, location, text });
+            navigation.goBack();
         } catch (e) {
             Alert.alert('포스트 작성 실패', e.message, [
                 { text: '확인', onPress: () => setIsLoading(false) },
             ]);
         }
-    }, [photoUris]);
+    }, [photoUris, location, text, navigation]);
 
     useLayoutEffect(() => {
         navigation.setOptions({
