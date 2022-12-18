@@ -1,4 +1,5 @@
 import {
+    Alert,
     Pressable,
     StyleSheet,
     Text,
@@ -7,12 +8,15 @@ import {
 } from 'react-native';
 import ImageSwiper from '../components/ImageSwiper';
 import PropTypes from 'prop-types';
-import { memo } from 'react';
+import { memo, useState } from 'react';
 import FastImage from './FastImage';
 import { GRAY, PRIMARY, WHITE } from '../colors';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useUserState } from '../contexts/UserContext';
 import { useActionSheet } from '@expo/react-native-action-sheet';
+import DangerAlert, { AlertTypes } from './DangerAlert';
+import { deletePost } from '../api/post';
+import event, { EventTypes } from '../event';
 
 const ActionSheetOptions = {
     options: ['삭제', '수정', '취소'],
@@ -24,57 +28,78 @@ const PostItem = memo(({ post }) => {
     const width = useWindowDimensions().width;
     const [user] = useUserState();
     const { showActionSheetWithOptions } = useActionSheet();
+    const [visible, setVisible] = useState(false);
 
     const onPressActionSheet = (idx) => {
         console.log(idx);
         if (idx === 0) {
+            setVisible(true);
         } else if (idx === 1) {
         }
     };
 
+    const onClose = () => setVisible(false);
+
     return (
-        <View style={styles.container}>
-            <View style={styles.header}>
-                <View style={styles.profile}>
-                    <FastImage
-                        source={{ uri: post.user.photoURL }}
-                        style={styles.profilePhoto}
-                    />
-                    <Text style={styles.nickname}>
-                        {post.user.displayName ?? 'nickname'}
-                    </Text>
-                </View>
-                {post.user.uid === user.uid && (
-                    <Pressable
-                        hitSlop={10}
-                        onPress={() =>
-                            showActionSheetWithOptions(
-                                ActionSheetOptions,
-                                onPressActionSheet
-                            )
-                        }
-                    >
-                        <MaterialCommunityIcons
-                            name="dots-horizontal"
-                            size={24}
-                            color={GRAY.DARK}
+        <>
+            <DangerAlert
+                alertType={AlertTypes.DELETE_POST}
+                visible={visible}
+                onClose={onClose}
+                onConfirm={async () => {
+                    try {
+                        await deletePost(post.id);
+                        event.emit(EventTypes.DELETE, { id: post.id });
+                    } catch (e) {
+                        console.log(e);
+                        Alert.alert('글 삭제 실패');
+                        onClose();
+                    }
+                }}
+            />
+            <View style={styles.container}>
+                <View style={styles.header}>
+                    <View style={styles.profile}>
+                        <FastImage
+                            source={{ uri: post.user.photoURL }}
+                            style={styles.profilePhoto}
                         />
-                    </Pressable>
-                )}
+                        <Text style={styles.nickname}>
+                            {post.user.displayName ?? 'nickname'}
+                        </Text>
+                    </View>
+                    {post.user.uid === user.uid && (
+                        <Pressable
+                            hitSlop={10}
+                            onPress={() =>
+                                showActionSheetWithOptions(
+                                    ActionSheetOptions,
+                                    onPressActionSheet
+                                )
+                            }
+                        >
+                            <MaterialCommunityIcons
+                                name="dots-horizontal"
+                                size={24}
+                                color={GRAY.DARK}
+                            />
+                        </Pressable>
+                    )}
+                </View>
+                <View style={{ width, height: width }}>
+                    <ImageSwiper photos={post.photos} />
+                </View>
+                <View style={styles.location}>
+                    <MaterialCommunityIcons
+                        name="map-marker"
+                        size={24}
+                        color={PRIMARY.DEFAULT}
+                    />
+                    <Text>{post.location}</Text>
+                </View>
+                <Text style={styles.text}>{post.text}</Text>
             </View>
-            <View style={{ width, height: width }}>
-                <ImageSwiper photos={post.photos} />
-            </View>
-            <View style={styles.location}>
-                <MaterialCommunityIcons
-                    name="map-marker"
-                    size={24}
-                    color={PRIMARY.DEFAULT}
-                />
-                <Text>{post.location}</Text>
-            </View>
-            <Text style={styles.text}>{post.text}</Text>
-        </View>
+        </>
     );
 });
 PostItem.displayName = 'PostItem';

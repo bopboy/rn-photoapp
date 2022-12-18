@@ -6,12 +6,18 @@ import Button, { ButtonTypes } from './Button';
 
 export const AlertTypes = {
     SIGNOUT: 'SIGNOUT',
+    DELETE_POST: 'DELETE_POST',
 };
 const DangerAlertProps = {
     SIGNOUT: {
         iconName: 'logout-variant',
         title: '로그아웃',
         message: '로그아웃 하려구?',
+    },
+    DELETE_POST: {
+        iconName: 'delete-variant',
+        title: '글 삭제',
+        message: '정말 지우려구?',
     },
 };
 
