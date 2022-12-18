@@ -47,7 +47,7 @@ const SelectPhotosScreen = () => {
                         })
                     )
                 );
-                navigation.navigate(MainRoutes.WRITE_TEXT, { localUris });
+                navigation.replace(MainRoutes.WRITE_TEXT, { localUris });
             } catch (e) {
                 Alert.alert('사진 찾기 실패', e.message);
             }
