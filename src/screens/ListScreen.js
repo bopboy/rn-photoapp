@@ -1,8 +1,10 @@
-import { useEffect } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { useEffect, useState } from 'react';
+import { StyleSheet, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { getPosts } from '../api/post';
 import { WHITE } from '../colors';
 import PostItem from '../components/PostItem';
+import PostList from '../components/PostList';
 // import PropTypes from 'prop-types';
 
 const post = {
@@ -22,15 +24,18 @@ const post = {
     },
 };
 const ListScreen = () => {
+    const [data, setData] = useState([]);
+    const { top } = useSafeAreaInsets();
+
     useEffect(() => {
         (async () => {
             const list = await getPosts();
-            console.log(list, list.length);
+            setData(list);
         })();
     }, []);
     return (
-        <View style={styles.container}>
-            <PostItem post={post} />
+        <View style={[styles.container, { paddingTop: top }]}>
+            <PostList data={data} />
         </View>
     );
 };
@@ -43,7 +48,8 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         justifyContent: 'center',
-        alignItems: 'center',
+        // alignItems: 'center',
+        backgroundColor: WHITE,
     },
     title: {
         fontSize: 30,

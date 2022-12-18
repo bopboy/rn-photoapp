@@ -3,12 +3,11 @@ import ImageSwiper from '../components/ImageSwiper';
 import PropTypes from 'prop-types';
 import { memo } from 'react';
 import FastImage from './FastImage';
-import { PRIMARY, WHITE } from '../colors';
+import { GRAY, PRIMARY, WHITE } from '../colors';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 const PostItem = memo(({ post }) => {
     const width = useWindowDimensions().width;
-    console.log('gesg', post.user.photoURL);
     return (
         <View style={styles.container}>
             <View style={styles.header}>
@@ -16,7 +15,9 @@ const PostItem = memo(({ post }) => {
                     source={{ uri: post.user.photoURL }}
                     style={styles.profilePhoto}
                 />
-                <Text style={styles.nickname}>{post.user.displayName}</Text>
+                <Text style={styles.nickname}>
+                    {post.user.displayName ?? 'nickname'}
+                </Text>
             </View>
             <View style={{ width, height: width }}>
                 <ImageSwiper photos={post.photos} />
@@ -51,9 +52,10 @@ const styles = StyleSheet.create({
         paddingBottom: 10,
     },
     profilePhoto: {
-        widht: 40,
+        width: 40,
         height: 40,
         borderRadius: 20,
+        backgroundColor: GRAY.LIGHT,
     },
     nickname: {
         paddingHorizontal: 10,
