@@ -10,7 +10,10 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 import { useCallback, useEffect, useLayoutEffect, useState } from 'react';
 import HeaderRight from '../components/HeaderRight';
 import FastImage from '../components/FastImage';
-import { GRAY } from '../colors';
+import { GRAY, PRIMARY } from '../colors';
+import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { MAP_KEY } from '../../env';
 
 const MAX_TEXT_LENGTH = 60;
 
@@ -21,6 +24,7 @@ const WriteTextScreen = () => {
 
     const [photoUris, setPhotoUris] = useState([]);
     const [text, setText] = useState('');
+    const [location, setLocation] = useState('');
 
     const [disabled, setDisabled] = useState(true);
     const [isLoading, setIsLoading] = useState(false);
@@ -38,7 +42,6 @@ const WriteTextScreen = () => {
         setTimeout(() => {
             setIsLoading(false);
         }, 3000);
-        // setIsLoading(false);
     }, []);
 
     useLayoutEffect(() => {
@@ -59,6 +62,27 @@ const WriteTextScreen = () => {
                         style={{ width, height: width }}
                     />
                 ))}
+            </View>
+            <View style={styles.location}>
+                <GooglePlacesAutocomplete
+                    placeholder={'Location'}
+                    query={{ key: MAP_KEY, language: 'ko' }}
+                    onPress={(data) => setLocation(data.description)}
+                    onFail={(e) => {
+                        console.log('GooglePlacesAutoComplete: ', e);
+                    }}
+                    styles={{
+                        container: { flex: 0 },
+                        textInput: { paddingLeft: 30 },
+                    }}
+                />
+                <View style={styles.locationIcon}>
+                    <MaterialCommunityIcons
+                        name="map-marker"
+                        size={20}
+                        color={location ? PRIMARY.DEFAULT : GRAY.DARK}
+                    />
+                </View>
             </View>
             <View>
                 <TextInput
@@ -101,6 +125,17 @@ const styles = StyleSheet.create({
         paddingHorizontal: 20,
         color: GRAY.DARK,
         fontSize: 12,
+    },
+    location: {
+        paddingHorizontal: 20,
+        paddingVertical: 5,
+        borderBottomWidth: 0.5,
+        borderBottomColor: GRAY.LIGHT,
+    },
+    locationIcon: {
+        position: 'absolute',
+        left: 20,
+        top: 16,
     },
 });
 
