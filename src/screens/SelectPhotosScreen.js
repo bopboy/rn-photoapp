@@ -47,13 +47,13 @@ const SelectPhotosScreen = () => {
                         })
                     )
                 );
-                console.log(localUris);
+                navigation.navigate(MainRoutes.WRITE_TEXT, { localUris });
             } catch (e) {
                 Alert.alert('사진 찾기 실패', e.message);
             }
             setIsLoading(false);
         }
-    }, [disabled, photos]);
+    }, [disabled, navigation, photos]);
 
     useLayoutEffect(() => {
         navigation.setOptions({
