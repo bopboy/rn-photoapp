@@ -1,8 +1,9 @@
-import { Image, Platform, StyleSheet, View } from 'react-native';
+import { Platform, StyleSheet, View } from 'react-native';
 import PropTypes from 'prop-types';
 import Swiper from 'react-native-swiper';
 import { BlurView } from 'expo-blur';
 import { BLACK, PRIMARY } from '../colors';
+import FastImage from './FastImage';
 
 const ImageSwiper = ({ photos }) => {
     return (
@@ -11,10 +12,10 @@ const ImageSwiper = ({ photos }) => {
             dot={<View style={styles.dot} />}
             activeDot={<View style={[styles.dot, styles.activeDot]} />}
         >
-            {photos.map(({ uri }, idx) => (
+            {photos.map((photo, idx) => (
                 <View key={idx} style={styles.photo}>
-                    <Image
-                        source={{ uri }}
+                    <FastImage
+                        source={{ uri: photo.uri ?? photo }}
                         resizeMode={'cover'}
                         style={StyleSheet.absoluteFillObject}
                     />
@@ -24,8 +25,8 @@ const ImageSwiper = ({ photos }) => {
                             android: 90,
                         })}
                     >
-                        <Image
-                            source={{ uri }}
+                        <FastImage
+                            source={{ uri: photo.uri ?? photo }}
                             resizeMode={'contain'}
                             style={styles.photo}
                         />
