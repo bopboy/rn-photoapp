@@ -14,6 +14,7 @@ import { GRAY } from '../colors';
 import LocationSearch from '../components/LocationSearch';
 import { uploadPhoto } from '../api/storage';
 import { createPost } from '../api/post';
+import event, { EventTypes } from '../event';
 
 const MAX_TEXT_LENGTH = 60;
 
@@ -44,6 +45,7 @@ const WriteTextScreen = () => {
                 photoUris.map((uri) => uploadPhoto(uri))
             );
             await createPost({ photos, location, text });
+            event.emit(EventTypes.REFRESH);
             navigation.goBack();
         } catch (e) {
             Alert.alert('포스트 작성 실패', e.message, [
