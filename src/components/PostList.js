@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import PostItem from './PostItem';
 import { GRAY } from '../colors';
 
-const PostList = ({ data, fetchNextPage }) => {
+const PostList = ({ data, fetchNextPage, refreshing, refetch }) => {
     return (
         <FlatList
             data={data}
@@ -13,6 +13,8 @@ const PostList = ({ data, fetchNextPage }) => {
             )}
             onEndReached={fetchNextPage}
             onEndReachedThreshold={0.4}
+            onRefresh={refetch}
+            refreshing={refreshing}
         />
     );
 };
@@ -20,6 +22,8 @@ const PostList = ({ data, fetchNextPage }) => {
 PostList.propTypes = {
     data: PropTypes.array.isRequired,
     fetchNextPage: PropTypes.func,
+    refetch: PropTypes.func,
+    refreshing: PropTypes.bool,
 };
 
 const styles = StyleSheet.create({

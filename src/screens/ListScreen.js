@@ -10,6 +10,7 @@ const ListScreen = () => {
     const [data, setData] = useState([]);
     const lastRef = useRef(null);
     const isLoadingRef = useRef(false);
+    const [refreshing, setRefreshing] = useState(false);
 
     const getList = async () => {
         if (!isLoadingRef.current) {
@@ -21,13 +22,25 @@ const ListScreen = () => {
         }
     };
 
+    const refetch = async () => {
+        setRefreshing(true);
+        lastRef.current = null;
+        await getList();
+        setRefreshing(false);
+    };
+
     useEffect(() => {
         getList();
     }, []);
 
     return (
         <View style={[styles.container, { paddingTop: top }]}>
-            <PostList data={data} fetchNextPage={getList} />
+            <PostList
+                data={data}
+                fetchNextPage={getList}
+                refreshing={refreshing}
+                refetch={refetch}
+            />
         </View>
     );
 };
