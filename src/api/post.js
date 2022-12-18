@@ -10,23 +10,27 @@ import {
     limit,
     startAfter,
     where,
-    deleteDoc
+    deleteDoc,
 } from 'firebase/firestore';
 
 export const createPost = async ({ photos, location, text }) => {
-    const { uid, displayName, photoURL } = getAuth().currentUser;
-    const collectionRef = collection(getFirestore(), 'posts');
-    const documentRef = doc(collectionRef);
-    const id = documentRef.id;
+    try {
+        const { uid, displayName, photoURL } = getAuth().currentUser;
+        const collectionRef = collection(getFirestore(), 'posts');
+        const documentRef = doc(collectionRef);
+        const id = documentRef.id;
 
-    await setDoc(documentRef, {
-        id,
-        photos,
-        location,
-        text,
-        user: { uid, displayName, photoURL },
-        createdTs: Date.now(),
-    });
+        await setDoc(documentRef, {
+            id,
+            photos,
+            location,
+            text,
+            user: { uid, displayName, photoURL },
+            createdTs: Date.now(),
+        });
+    } catch (e) {
+        throw new Error('포스트 작성 실패');
+    }
 };
 
 const getOption = ({ after, isMine }) => {
@@ -68,5 +72,13 @@ export const getPosts = async ({ after, isMine }) => {
 };
 
 export const deletePost = async (id) => {
-    await deleteDoc(doc(getFirestore(), `posts/${id}`))
-}
+    await deleteDoc(doc(getFirestore(), `posts/${id}`));
+};
+
+export const updatePost = async (post) => {
+    try {
+        await setDoc(doc(getFirestore(), `posts/${post.id}`), post);
+    } catch (e) {
+        throw new Error('포스트 수정 실패');
+    }
+};

@@ -17,6 +17,8 @@ import { useActionSheet } from '@expo/react-native-action-sheet';
 import DangerAlert, { AlertTypes } from './DangerAlert';
 import { deletePost } from '../api/post';
 import event, { EventTypes } from '../event';
+import { useNavigation } from '@react-navigation/native';
+import { MainRoutes } from '../navigations/routes';
 
 const ActionSheetOptions = {
     options: ['삭제', '수정', '취소'],
@@ -29,12 +31,13 @@ const PostItem = memo(({ post }) => {
     const [user] = useUserState();
     const { showActionSheetWithOptions } = useActionSheet();
     const [visible, setVisible] = useState(false);
+    const navigation = useNavigation();
 
     const onPressActionSheet = (idx) => {
-        console.log(idx);
         if (idx === 0) {
             setVisible(true);
         } else if (idx === 1) {
+            navigation.navigate(MainRoutes.WRITE_TEXT, { post });
         }
     };
 

@@ -7,13 +7,19 @@ import {
     View,
 } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
-import { useCallback, useEffect, useLayoutEffect, useState } from 'react';
+import {
+    useCallback,
+    useEffect,
+    useLayoutEffect,
+    useRef,
+    useState,
+} from 'react';
 import HeaderRight from '../components/HeaderRight';
 import FastImage from '../components/FastImage';
 import { GRAY } from '../colors';
 import LocationSearch from '../components/LocationSearch';
 import { uploadPhoto } from '../api/storage';
-import { createPost } from '../api/post';
+import { createPost, updatePost } from '../api/post';
 import event, { EventTypes } from '../event';
 
 const MAX_TEXT_LENGTH = 60;
@@ -30,29 +36,49 @@ const WriteTextScreen = () => {
     const [disabled, setDisabled] = useState(true);
     const [isLoading, setIsLoading] = useState(false);
 
+    const locationRef = useRef(null);
+
     useEffect(() => {
         setDisabled(isLoading || !text);
     }, [text, isLoading]);
 
     useEffect(() => {
-        setPhotoUris(params?.localUris ?? []);
-    }, [params?.localUris]);
+        if (params) {
+            const { photoUris, post } = params;
+            if (photoUris) {
+                setPhotoUris(params.photoUris);
+            } else if (post) {
+                setPhotoUris(post.photos);
+                setText(post.text);
+                setLocation(post.location);
+                locationRef.current?.setAddressText(post.location);
+            }
+        }
+    }, [params]);
 
     const onSubmit = useCallback(async () => {
         setIsLoading(true);
         try {
-            const photos = await Promise.all(
-                photoUris.map((uri) => uploadPhoto(uri))
-            );
-            await createPost({ photos, location, text });
-            event.emit(EventTypes.REFRESH);
+            if (params?.photoUris) {
+                const photos = await Promise.all(
+                    photoUris.map((uri) => uploadPhoto(uri))
+                );
+                await createPost({ photos, location, text });
+                event.emit(EventTypes.REFRESH);
+            } else if (params?.post) {
+                const { post } = params;
+                const updatedPost = { ...post, location, text };
+                await updatePost(updatedPost);
+                event.emit(EventTypes.UPDATE, { post: updatedPost });
+            }
             navigation.goBack();
         } catch (e) {
-            Alert.alert('포스트 작성 실패', e.message, [
+            console.log(e);
+            Alert.alert(e.message, [
                 { text: '확인', onPress: () => setIsLoading(false) },
             ]);
         }
-    }, [photoUris, location, text, navigation]);
+    }, [params, photoUris, location, text, navigation]);
 
     useLayoutEffect(() => {
         navigation.setOptions({
@@ -74,6 +100,7 @@ const WriteTextScreen = () => {
                 ))}
             </View>
             <LocationSearch
+                ref={locationRef}
                 onPress={({ description }) => setLocation(description)}
                 isLoading={isLoading}
                 isSelected={!!location}
