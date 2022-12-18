@@ -1,4 +1,5 @@
 import {
+    Alert,
     StyleSheet,
     Text,
     TextInput,
@@ -11,6 +12,7 @@ import HeaderRight from '../components/HeaderRight';
 import FastImage from '../components/FastImage';
 import { GRAY } from '../colors';
 import LocationSearch from '../components/LocationSearch';
+import { uploadPhoto } from '../api/storage';
 
 const MAX_TEXT_LENGTH = 60;
 
@@ -34,12 +36,19 @@ const WriteTextScreen = () => {
         setPhotoUris(params?.localUris ?? []);
     }, [params?.localUris]);
 
-    const onSubmit = useCallback(() => {
+    const onSubmit = useCallback(async () => {
         setIsLoading(true);
-        setTimeout(() => {
-            setIsLoading(false);
-        }, 1000);
-    }, []);
+        try {
+            const photos = await Promise.all(
+                photoUris.map((uri) => uploadPhoto(uri))
+            );
+            console.log(photos);
+        } catch (e) {
+            Alert.alert('포스트 작성 실패', e.message, [
+                { text: '확인', onPress: () => setIsLoading(false) },
+            ]);
+        }
+    }, [photoUris]);
 
     useLayoutEffect(() => {
         navigation.setOptions({
