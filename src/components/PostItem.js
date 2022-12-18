@@ -1,23 +1,66 @@
-import { StyleSheet, Text, useWindowDimensions, View } from 'react-native';
+import {
+    Pressable,
+    StyleSheet,
+    Text,
+    useWindowDimensions,
+    View,
+} from 'react-native';
 import ImageSwiper from '../components/ImageSwiper';
 import PropTypes from 'prop-types';
 import { memo } from 'react';
 import FastImage from './FastImage';
 import { GRAY, PRIMARY, WHITE } from '../colors';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { useUserState } from '../contexts/UserContext';
+import { useActionSheet } from '@expo/react-native-action-sheet';
+
+const ActionSheetOptions = {
+    options: ['삭제', '수정', '취소'],
+    cancelButtonIndex: 2,
+    destructiveButtonIndex: 0,
+};
 
 const PostItem = memo(({ post }) => {
     const width = useWindowDimensions().width;
+    const [user] = useUserState();
+    const { showActionSheetWithOptions } = useActionSheet();
+
+    const onPressActionSheet = (idx) => {
+        console.log(idx);
+        if (idx === 0) {
+        } else if (idx === 1) {
+        }
+    };
+
     return (
         <View style={styles.container}>
             <View style={styles.header}>
-                <FastImage
-                    source={{ uri: post.user.photoURL }}
-                    style={styles.profilePhoto}
-                />
-                <Text style={styles.nickname}>
-                    {post.user.displayName ?? 'nickname'}
-                </Text>
+                <View style={styles.profile}>
+                    <FastImage
+                        source={{ uri: post.user.photoURL }}
+                        style={styles.profilePhoto}
+                    />
+                    <Text style={styles.nickname}>
+                        {post.user.displayName ?? 'nickname'}
+                    </Text>
+                </View>
+                {post.user.uid === user.uid && (
+                    <Pressable
+                        hitSlop={10}
+                        onPress={() =>
+                            showActionSheetWithOptions(
+                                ActionSheetOptions,
+                                onPressActionSheet
+                            )
+                        }
+                    >
+                        <MaterialCommunityIcons
+                            name="dots-horizontal"
+                            size={24}
+                            color={GRAY.DARK}
+                        />
+                    </Pressable>
+                )}
             </View>
             <View style={{ width, height: width }}>
                 <ImageSwiper photos={post.photos} />
@@ -48,8 +91,13 @@ const styles = StyleSheet.create({
     header: {
         flexDirection: 'row',
         alignItems: 'center',
+        justifyContent: 'space-between',
         paddingHorizontal: 10,
         paddingBottom: 10,
+    },
+    profile: {
+        flexDirection: 'row',
+        alignItems: 'center',
     },
     profilePhoto: {
         width: 40,
