@@ -4,6 +4,7 @@ import MapView, { Marker } from 'react-native-maps';
 import LocationSearch from '../components/LocationSearch';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useState } from 'react';
+import LocationPostList from './LocationPostList';
 
 const MapScreen = () => {
     const { top } = useSafeAreaInsets();
@@ -41,6 +42,11 @@ const MapScreen = () => {
                     }));
                 }}
             />
+            {location.name && (
+                <View style={styles.list}>
+                    <LocationPostList location={location.name} />
+                </View>
+            )}
         </View>
     );
 };
@@ -64,6 +70,12 @@ const styles = StyleSheet.create({
         position: 'absolute',
         width: '90%',
         borderBottomWidth: 0,
+    },
+    list: {
+        position: 'absolute',
+        width: '100%',
+        paddingHorizontal: 10,
+        bottom: 40,
     },
 });
 
