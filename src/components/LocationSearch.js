@@ -25,6 +25,7 @@ const LocationSearch = forwardRef(
                     debounce={400}
                     enablePoweredByContainer={false}
                     textInputProps={{ editable: !isLoading }}
+                    fetchDetails={true}
                 />
                 {iconVisible && (
                     <View style={[defaultStyles.icon, styles?.icon]}>
